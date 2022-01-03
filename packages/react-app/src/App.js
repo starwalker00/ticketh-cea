@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/react-hooks";
 import { Contract } from "@ethersproject/contracts";
-import { getDefaultProvider } from "@ethersproject/providers";
+import { getDefaultProvider, Web3Provider } from "@ethersproject/providers";
 import React, { useEffect, useState } from "react";
 
 import { Body, Button, Header, Image, Link } from "./components";
@@ -12,13 +12,50 @@ import GET_TRANSFERS from "./graphql/subgraph";
 
 async function readOnChainData() {
   // Should replace with the end-user wallet, e.g. Metamask
-  const defaultProvider = getDefaultProvider();
-  // Create an instance of an ethers.js Contract
-  // Read more about ethers.js on https://docs.ethers.io/v5/api/contract/contract/
-  const ceaErc20 = new Contract(addresses.ceaErc20, abis.erc20, defaultProvider);
-  // A pre-defined address that owns some CEAERC20 tokens
-  const tokenBalance = await ceaErc20.balanceOf("0x3f8CB69d9c0ED01923F11c829BaE4D9a4CB6c82C");
-  console.log({ tokenBalance: tokenBalance.toString() });
+  const provider = new Web3Provider(window.ethereum);
+  const signer = provider.getSigner()
+  // // Create an instance of an ethers.js Contract
+  // // Read more about ethers.js on https://docs.ethers.io/v5/api/contract/contract/
+  // const ceaErc20 = new Contract(addresses.ceaErc20, abis.erc20, defaultProvider);
+  // // A pre-defined address that owns some CEAERC20 tokens
+  // const tokenBalance = await ceaErc20.balanceOf("0x3f8CB69d9c0ED01923F11c829BaE4D9a4CB6c82C");
+  // console.log({ tokenBalance: tokenBalance.toString() });
+  const ethBalance = await provider.getBalance("0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266");
+  console.log({ ethBalance: ethBalance.toString() });
+}
+
+async function mintFirstTicketOfficeNFT() {
+  console.log("mintFirstTicketOfficeNFT()");
+  const provider = new Web3Provider(window.ethereum);
+  const signer = provider.getSigner()
+  const ticketOffice = new Contract(addresses.ticketOffice, abis.ticketOffice, signer);
+  // view method
+  const name = await ticketOffice.name();
+  console.log({ name: name.toString() });
+
+  const txData = await ticketOffice.mintFirst();
+  console.log({ hash: JSON.stringify(txData) });
+  await provider.waitForTransaction(txData.hash);
+  const receipt = await provider.getTransactionReceipt(txData.hash);
+  console.log(parseInt(receipt.logs[0].topics[3], 16));
+  // console.log(Web3.utils.hexToNumber(receipt.logs[0].topics[3])); // This is the tokenID
+}
+
+async function mintTicketOfficeNFT() {
+  console.log("mintTicketOfficeNFT()");
+  const provider = new Web3Provider(window.ethereum);
+  const signer = provider.getSigner()
+  const ticketOffice = new Contract(addresses.ticketOffice, abis.ticketOffice, signer);
+  // view method
+  const name = await ticketOffice.name();
+  console.log({ name: name.toString() });
+
+  const txData = await ticketOffice.buyTicket();
+  console.log({ hash: JSON.stringify(txData) });
+  await provider.waitForTransaction(txData.hash);
+  const receipt = await provider.getTransactionReceipt(txData.hash);
+  console.log(parseInt(receipt.logs[0].topics[3], 16));
+  // console.log(Web3.utils.hexToNumber(receipt.logs[0].topics[3])); // This is the tokenID
 }
 
 function WalletButton({ provider, loadWeb3Modal, logoutOfWeb3Modal }) {
@@ -37,14 +74,14 @@ function WalletButton({ provider, loadWeb3Modal, logoutOfWeb3Modal }) {
         setAccount(accounts[0]);
 
         // Resolve the ENS name for the first account.
-        const name = await provider.lookupAddress(accounts[0]);
+        // const name = await provider.lookupAddress(accounts[0]);
 
         // Render either the ENS name or the shortened account address.
-        if (name) {
-          setRendered(name);
-        } else {
-          setRendered(account.substring(0, 6) + "..." + account.substring(36));
-        }
+        // if (name) {
+        //   setRendered(name);
+        // } else {
+        setRendered(account.substring(0, 6) + "..." + account.substring(36));
+        // }
       } catch (err) {
         setAccount("");
         setRendered("");
@@ -90,9 +127,14 @@ function App() {
         <p>
           Edit <code>packages/react-app/src/App.js</code> and save to reload.
         </p>
-        {/* Remove the "hidden" prop and open the JavaScript console in the browser to see what this function does */}
-        <Button hidden onClick={() => readOnChainData()}>
-          Read On-Chain Balance
+        <Button onClick={() => readOnChainData()}>
+          Read ETH Balance
+        </Button>
+        <Button onClick={() => mintFirstTicketOfficeNFT()}>
+          Mint First TicketOfficeNFT
+        </Button>
+        <Button onClick={() => mintTicketOfficeNFT()}>
+          Mint TicketOfficeNFT
         </Button>
         <Link href="https://ethereum.org/developers/#getting-started" style={{ marginTop: "8px" }}>
           Learn Ethereum
