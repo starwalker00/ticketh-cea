@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/react-hooks";
 import { Contract } from "@ethersproject/contracts";
-import { getDefaultProvider, Web3Provider } from "@ethersproject/providers";
+import { Web3Provider } from "@ethersproject/providers";
 import React, { useEffect, useState } from "react";
 
 import { Body, Button, Header, Image, Link } from "./components";
@@ -13,7 +13,7 @@ import GET_TRANSFERS from "./graphql/subgraph";
 async function readOnChainData() {
   // Should replace with the end-user wallet, e.g. Metamask
   const provider = new Web3Provider(window.ethereum);
-  const signer = provider.getSigner()
+  // const signer = provider.getSigner()
   // // Create an instance of an ethers.js Contract
   // // Read more about ethers.js on https://docs.ethers.io/v5/api/contract/contract/
   // const ceaErc20 = new Contract(addresses.ceaErc20, abis.erc20, defaultProvider);
