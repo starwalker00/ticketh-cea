@@ -10,6 +10,8 @@ import useWeb3Modal from "./hooks/useWeb3Modal";
 import { addresses, abis } from "@project/contracts";
 import GET_TRANSFERS from "./graphql/subgraph";
 
+import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
+
 async function readOnChainData() {
   // Should replace with the end-user wallet, e.g. Metamask
   const provider = new Web3Provider(window.ethereum);
@@ -56,6 +58,13 @@ async function mintTicketOfficeNFT() {
   const receipt = await provider.getTransactionReceipt(txData.hash);
   console.log(parseInt(receipt.logs[0].topics[3], 16));
   // console.log(Web3.utils.hexToNumber(receipt.logs[0].topics[3])); // This is the tokenID
+}
+
+function showRamp() {
+  new RampInstantSDK({
+    hostAppName: 'Your App',
+    hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
+  }).show();
 }
 
 function WalletButton({ provider, loadWeb3Modal, logoutOfWeb3Modal }) {
@@ -135,6 +144,9 @@ function App() {
         </Button>
         <Button onClick={() => mintTicketOfficeNFT()}>
           Mint TicketOfficeNFT
+        </Button>
+        <Button onClick={() => showRamp()}>
+          showRamp
         </Button>
         <Link href="https://ethereum.org/developers/#getting-started" style={{ marginTop: "8px" }}>
           Learn Ethereum
