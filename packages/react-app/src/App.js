@@ -2,8 +2,11 @@ import { useQuery } from "@apollo/react-hooks";
 import { Contract } from "@ethersproject/contracts";
 import { Web3Provider } from "@ethersproject/providers";
 import React, { useEffect, useState } from "react";
+import { Suspense } from "react";
 
-import { Body, Button, Header, Image, Link } from "./components";
+import TransferDeadline from "./components/TransferDeadline.js";
+
+import { Body, Button, Header, Image, Link, Paragraph } from "./components";
 import logo from "./ethereumLogo.png";
 import useWeb3Modal from "./hooks/useWeb3Modal";
 
@@ -117,6 +120,11 @@ function App() {
         <WalletButton provider={provider} loadWeb3Modal={loadWeb3Modal} logoutOfWeb3Modal={logoutOfWeb3Modal} />
       </Header>
       <Body>
+        <Paragraph>
+          <Suspense fallback={"Loading profile..."}>
+            <TransferDeadline />
+          </Suspense>
+        </Paragraph>
         <Image src={logo} alt="react-logo" />
         <p>
           Edit <code>packages/react-app/src/App.js</code> and save to reload.

@@ -52,3 +52,9 @@ export const Button = styled.button`
     outline: none;
   }
 `;
+
+export const Paragraph = styled.p`
+  text-align: center;
+  color: #282c34;
+  background-color: white;
+`;
