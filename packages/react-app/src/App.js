@@ -26,25 +26,8 @@ async function readOnChainData() {
   console.log({ ethBalance: ethBalance.toString() });
 }
 
-async function mintFirstTicketOfficeNFT() {
-  console.log("mintFirstTicketOfficeNFT()");
-  const provider = new Web3Provider(window.ethereum);
-  const signer = provider.getSigner()
-  const ticketOffice = new Contract(addresses.ticketOffice, abis.ticketOffice, signer);
-  // view method
-  const name = await ticketOffice.name();
-  console.log({ name: name.toString() });
-
-  const txData = await ticketOffice.mintFirst();
-  console.log({ hash: JSON.stringify(txData) });
-  await provider.waitForTransaction(txData.hash);
-  const receipt = await provider.getTransactionReceipt(txData.hash);
-  console.log(parseInt(receipt.logs[0].topics[3], 16));
-  // console.log(Web3.utils.hexToNumber(receipt.logs[0].topics[3])); // This is the tokenID
-}
-
-async function mintTicketOfficeNFT() {
-  console.log("mintTicketOfficeNFT()");
+async function buyTicket() {
+  console.log("buyTicket()");
   const provider = new Web3Provider(window.ethereum);
   const signer = provider.getSigner()
   const ticketOffice = new Contract(addresses.ticketOffice, abis.ticketOffice, signer);
@@ -64,6 +47,8 @@ function showRamp() {
   new RampInstantSDK({
     hostAppName: 'Your App',
     hostLogoUrl: 'https://rampnetwork.github.io/assets/misc/test-logo.png',
+    swapAsset: 'MATIC_DAI',
+    swapAmount: 100e18 // 100 DAI
   }).show();
 }
 
@@ -139,11 +124,8 @@ function App() {
         <Button onClick={() => readOnChainData()}>
           Read ETH Balance
         </Button>
-        <Button onClick={() => mintFirstTicketOfficeNFT()}>
-          Mint First TicketOfficeNFT
-        </Button>
-        <Button onClick={() => mintTicketOfficeNFT()}>
-          Mint TicketOfficeNFT
+        <Button onClick={() => buyTicket()}>
+          buyTicket
         </Button>
         <Button onClick={() => showRamp()}>
           showRamp
