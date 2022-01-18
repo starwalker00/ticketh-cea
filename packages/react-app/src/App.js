@@ -3,7 +3,7 @@ import { Contract } from "@ethersproject/contracts";
 import { Web3Provider } from "@ethersproject/providers";
 import React, { useEffect, useState } from "react";
 import { Suspense } from "react";
-
+import { BigNumber } from "@ethersproject/bignumber";
 import TransferDeadline from "./components/TransferDeadline.js";
 
 import { Body, Button, Header, Image, Link, Paragraph } from "./components";
@@ -37,8 +37,10 @@ async function buyTicket() {
   // view method
   const name = await ticketOffice.name();
   console.log({ name: name.toString() });
+  let value = BigNumber.from("1000000000000000000");
+  console.log(`{ value: ${value} }`);
 
-  const txData = await ticketOffice.buyTicket();
+  const txData = await ticketOffice.buyTicket(false, { value: value });
   console.log({ hash: JSON.stringify(txData) });
   await provider.waitForTransaction(txData.hash);
   const receipt = await provider.getTransactionReceipt(txData.hash);
