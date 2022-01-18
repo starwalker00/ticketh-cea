@@ -1,11 +1,11 @@
-import { Web3Provider } from "@ethersproject/providers";
+import { JsonRpcProvider } from "@ethersproject/providers";
 import { addresses, abis } from "@project/contracts";
 import { Contract } from "@ethersproject/contracts";
 
 export const fetchDeadline = () => {
   let status = "pending";
   let result;
-  const provider = new Web3Provider(window.ethereum);
+  const provider = new JsonRpcProvider(process.env.REACT_APP_PUBLIC_RPC);
   const ticketOffice = new Contract(addresses.ticketOffice, abis.ticketOffice, provider);
   let suspender = ticketOffice.get_transferDeadline().then(
     (res) => {
