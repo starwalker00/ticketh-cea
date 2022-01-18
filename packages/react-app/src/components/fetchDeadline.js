@@ -5,8 +5,8 @@ import { Contract } from "@ethersproject/contracts";
 export const fetchDeadline = () => {
   let status = "pending";
   let result;
-  const provider = new JsonRpcProvider(process.env.REACT_APP_PUBLIC_RPC);
-  const ticketOffice = new Contract(addresses.ticketOffice, abis.ticketOffice, provider);
+  const publicProvider = new JsonRpcProvider(process.env.REACT_APP_PUBLIC_RPC);
+  const ticketOffice = new Contract(addresses.ticketOffice, abis.ticketOffice, publicProvider);
   let suspender = ticketOffice.get_transferDeadline().then(
     (res) => {
       console.log(`{ res: ${JSON.stringify(res, null, 2)}}`);
