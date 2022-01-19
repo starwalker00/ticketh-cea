@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Suspense } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
 import TransferDeadline from "./components/TransferDeadline.js";
+import ErrorBoundary from "./components/ErrorBoundary.js";
 
 import { Body, Button, Header, Image, Link, Paragraph } from "./components";
 import logo from "./ethereumLogo.png";
@@ -123,9 +124,11 @@ function App() {
       </Header>
       <Body>
         <Paragraph>
-          <Suspense fallback={"Loading profile..."}>
-            <TransferDeadline />
-          </Suspense>
+          <ErrorBoundary>
+            <Suspense fallback={"Loading profile..."}>
+              <TransferDeadline />
+            </Suspense>
+          </ErrorBoundary>
         </Paragraph>
         <Image src={logo} alt="react-logo" />
         <p>
